@@ -11,6 +11,7 @@ import { createRequire } from 'module';
 import productRouter from "./routes/products.router.js";
 import cartsRouter from "./routes/carts.router.js";
 import authRouter from "./routes/auth.router.js";
+import mocksRouter from "./routes/mocks.router.js";
 
 // Importar conexión a MongoDB
 import connectDB from "./config/database.js";
@@ -62,6 +63,7 @@ app.use((req, res, next) => {
 app.use("/api/products", productRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", authRouter);
+app.use("/api/mocks", mocksRouter);
 
 // Manejador de rutas no encontradas (debe ir ANTES de los middleware de errores)
 app.use((req, res) => {
