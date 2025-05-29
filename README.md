@@ -1,10 +1,10 @@
-# E-Commerce Backend
+# E-Commerce Backend - Proyecto Final
 
-Un sistema backend completo para e-commerce desarrollado con Node.js y arquitectura por capas, que incluye autenticación JWT, roles de usuario, gestión de productos, carrito de compras y generación de tickets para transacciones.
+Un sistema backend completo para e-commerce desarrollado con Node.js y arquitectura por capas, que incluye autenticación JWT, roles de usuario, gestión de productos, carrito de compras, generación de tickets para transacciones y **sistema de mocking para datos de prueba**.
 
 ## Descripción del Proyecto
 
-Este proyecto implementa un backend robusto para plataformas de comercio electrónico siguiendo una arquitectura profesional por capas. El sistema gestiona productos, carritos de compra, usuarios con diferentes roles y proceso de checkout completo con generación de tickets.
+Este proyecto implementa un backend robusto para plataformas de comercio electrónico siguiendo una arquitectura profesional por capas. El sistema gestiona productos, carritos de compra, usuarios con diferentes roles, proceso de checkout completo con generación de tickets y **funcionalidades de mocking para facilitar el desarrollo y testing**.
 
 ## Características Principales
 
@@ -26,6 +26,12 @@ Este proyecto implementa un backend robusto para plataformas de comercio electr�
   - Modificar cantidades
   - Proceso de compra con validación de stock
 
+- **Sistema de Mocking** ⭐ *Nuevo*
+  - Generación de usuarios mock con contraseñas hasheadas
+  - Generación de productos mock con datos realistas
+  - Inserción masiva de datos de prueba en MongoDB
+  - Integración completa con la arquitectura del proyecto
+
 - **Tickets de Compra**
   - Generación de tickets con código único
   - Cálculo de totales
@@ -40,20 +46,20 @@ Este proyecto implementa un backend robusto para plataformas de comercio electr�
 
 El proyecto sigue una arquitectura por capas profesional:
 
-
+```
 └───src
     ├───config          # Configuración (DB, passport, variables de entorno)
     ├───controllers     # Controladores para manejar solicitudes HTTP
     ├───dao             # Acceso a datos (modelos y DAOs)
     │   ├───models      # Esquemas de MongoDB
-    │   └───mongo       # Implementaciones específicas para MongoDB
+    │   └───mongo       # Implementaciones específicas para MongoDB  
     ├───dto             # Objetos de transferencia de datos
     ├───middlewares     # Middleware para autenticación, autorización, etc.
     ├───repository      # Patrón repositorio, abstracción de DAOs
-    ├───routes          # Definición de rutas
+    ├───routes          # Definición de rutas (incluye mocks.router.js)
     ├───services        # Lógica de negocio
-    └───utils           # Utilidades (errores, logger, etc.)
-
+    └───utils           # Utilidades (errores, logger, mocking.utils.js)
+```
 
 ## Tecnologías Utilizadas
 
@@ -63,6 +69,7 @@ El proyecto sigue una arquitectura por capas profesional:
 - **Seguridad**: bcrypt para hash de contraseñas
 - **Email**: Nodemailer
 - **Tiempo Real**: Socket.IO
+- **Mocking**: @faker-js/faker ⭐ *Nuevo*
 - **Otros**: dotenv para variables de entorno, express-validator para validaciones
 
 ## Requisitos Previos
@@ -74,30 +81,36 @@ El proyecto sigue una arquitectura por capas profesional:
 ## Instalación
 
 1. Clonar el repositorio:
-
-   git clone https://github.com/tuusuario/ecommerce-backend.git
-   cd ecommerce-backend
-
+   ```bash
+   git clone https://github.com/eugeniaarias16/Backend-III.git
+   cd Backend-III
+   ```
 
 2. Instalar dependencias:
-
+   ```bash
    npm install
-
+   ```
 
 3. Configurar variables de entorno:
-   - Crear un archivo `.env` en la raíz del proyecto basado en `.env.example`
-   - Configurar credenciales de MongoDB y otras variables necesarias
+   - Crear un archivo `.env` en la raíz del proyecto
+   - Configurar credenciales de MongoDB y otras variables necesarias:
+   ```env
+   PORT=8080
+   MONGO_URI=tu_conexion_mongodb
+   JWT_SECRET=tu_clave_secreta
+   JWT_EXPIRES_IN=1h
+   # Otras variables necesarias...
+   ```
 
 4. Iniciar la aplicación:
-  
+   ```bash
    npm run dev   # Para desarrollo
    npm start     # Para producción
-   
+   ```
 
 ## Endpoints Principales
 
 ### Autenticación
-
 - `POST /api/sessions/register` - Registro de usuario
 - `POST /api/sessions/login` - Inicio de sesión
 - `GET /api/sessions/current` - Obtener usuario actual
@@ -106,7 +119,6 @@ El proyecto sigue una arquitectura por capas profesional:
 - `POST /api/sessions/reset-password` - Restablecer contraseña
 
 ### Productos
-
 - `GET /api/products` - Listar productos (con filtros, paginación)
 - `GET /api/products/:pid` - Obtener producto por ID
 - `POST /api/products` - Crear producto (admin)
@@ -114,7 +126,6 @@ El proyecto sigue una arquitectura por capas profesional:
 - `DELETE /api/products/:pid` - Eliminar producto (admin)
 
 ### Carritos
-
 - `POST /api/carts` - Crear carrito
 - `GET /api/carts/:cid` - Obtener carrito por ID
 - `POST /api/carts/:cid/product/:pid` - Agregar producto al carrito
@@ -124,12 +135,43 @@ El proyecto sigue una arquitectura por capas profesional:
 - `DELETE /api/carts/:cid` - Vaciar carrito
 - `POST /api/carts/:cid/purchase` - Finalizar compra y generar ticket
 
-## Ejemplos de Uso
+### **Sistema de Mocking** ⭐ *Nuevos Endpoints*
+
+- `GET /api/mocks/mockingusers` - Generar 50 usuarios mock con contraseñas hasheadas
+- `GET /api/mocks/mockingproducts` - Generar productos mock (por defecto 50, personalizable con query param `count`)
+- `POST /api/mocks/generateData` - Insertar usuarios y productos mock en MongoDB
+
+## Ejemplos de Uso - Sistema de Mocking
+
+### Generar Usuarios Mock
+```bash
+curl -X GET http://localhost:8080/api/mocks/mockingusers
+```
+
+### Generar Productos Mock
+```bash
+# Generar 50 productos (por defecto)
+curl -X GET http://localhost:8080/api/mocks/mockingproducts
+
+# Generar cantidad personalizada
+curl -X GET http://localhost:8080/api/mocks/mockingproducts?count=20
+```
+
+### Insertar Datos Mock en MongoDB
+```bash
+curl -X POST http://localhost:8080/api/mocks/generateData \
+  -H "Content-Type: application/json" \
+  -d '{
+    "users": 10,
+    "products": 25
+  }'
+```
+
+## Ejemplos de Uso - Funcionalidades Principales
 
 ### Registro de Usuario
-
-
-curl -X POST http://localhost:8082/api/sessions/register \
+```bash
+curl -X POST http://localhost:8080/api/sessions/register \
   -H "Content-Type: application/json" \
   -d '{
     "first_name": "Juan",
@@ -139,42 +181,47 @@ curl -X POST http://localhost:8082/api/sessions/register \
     "password": "contraseña123",
     "role": "user"
   }'
-
+```
 
 ### Inicio de Sesión
-
-
-curl -X POST http://localhost:8082/api/sessions/login \
+```bash
+curl -X POST http://localhost:8080/api/sessions/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "juan@ejemplo.com",
     "password": "contraseña123"
   }'
-
+```
 
 ### Crear Producto (como admin)
-
-
-curl -X POST http://localhost:8082/api/products \
+```bash
+curl -X POST http://localhost:8080/api/products \
   -H "Content-Type: application/json" \
   -H "Cookie: authToken=tu-jwt-token" \
   -d '{
     "title": "Smartphone XYZ",
     "description": "Último modelo con 128GB",
     "price": 999.99,
-    "code": "PHONE-123",
     "stock": 50,
-    "category": "Electronics",
-    "thumbnail": ["https://ejemplo.com/imagen1.jpg", "https://ejemplo.com/imagen2.jpg"]
+    "category": "electronics"
   }'
+```
 
+## Características del Sistema de Mocking
 
-### Comprar Carrito
+### Usuarios Mock Generados
+- **Contraseña**: Todos los usuarios mock tienen la contraseña `coder123` (hasheada con bcrypt)
+- **Roles**: Distribución 50/50 entre `admin` y `user`
+- **Datos**: Nombres, apellidos y emails realistas generados con Faker.js
+- **Edad**: Entre 18 y 80 años
+- **Carritos**: Se crean automáticamente para cada usuario
 
-
-curl -X POST http://localhost:8082/api/carts/tu-id-de-carrito/purchase \
-  -H "Cookie: authToken=tu-jwt-token"
-
+### Productos Mock Generados
+- **Categorías**: Electronics, Clothing, Books, Home, Sports, Beauty, Toys, Automotive, Music, Health
+- **Precios**: Rango realista entre $10 y $1000
+- **Stock**: Entre 0 y 100 unidades
+- **Estado**: 90% de productos activos
+- **Imágenes**: URLs de placeholder realistas
 
 ## Manejo de Errores
 
@@ -186,10 +233,33 @@ El sistema implementa un manejo de errores centralizado con diferentes tipos de 
 - `NotFoundError`: Recursos no encontrados (404)
 - `ConflictError`: Conflictos con recursos existentes (409)
 
-## Testing- Para ejecutar las pruebas:
+## Desarrollo y Testing
 
-npm test
+### Scripts Disponibles
+```bash
+npm run dev      # Iniciar en modo desarrollo con nodemon
+npm start        # Iniciar en modo producción
+npm run lint     # Ejecutar linter
+npm run lint:fix # Corregir errores de linting automáticamente
+```
 
+### Testing de Endpoints
+Para probar la funcionalidad de mocking, se recomienda usar herramientas como Postman, Thunder Client o curl con los ejemplos proporcionados anteriormente.
+
+## Historial del Proyecto
+
+### Pre-entrega Actual
+- ✅ Sistema de mocking completo implementado
+- ✅ Generación de usuarios y productos mock
+- ✅ Inserción masiva de datos de prueba
+- ✅ Integración con arquitectura existente
+
+### Funcionalidades Base
+- ✅ Autenticación JWT completa
+- ✅ CRUD de productos con roles
+- ✅ Sistema de carritos y checkout
+- ✅ Generación de tickets
+- ✅ Envío de emails
 
 ## Contribución
 
@@ -205,5 +275,7 @@ Este proyecto está licenciado bajo [ISC License](LICENSE).
 
 ## Autor
 
-Eugenia M. Arias.
+**Eugenia M. Arias**  
 Desarrollado como proyecto final para el curso de Backend de Coderhouse.
+
+---
