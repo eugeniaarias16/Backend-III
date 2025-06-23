@@ -27,6 +27,8 @@ import { requestLogger } from './middlewares/requestLogger.middleware.js';
 // Importar configuración de Passport
 import './config/passport.config.js';
 
+// Importar configuración de Swagger
+import { swaggerUi, swaggerSpec } from '../docs/swagger/swaggerConfig.js';
 
 
 
@@ -64,6 +66,9 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", authRouter);
 app.use("/api/mocks", mocksRouter);
+
+// Documentación Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // Manejador de rutas no encontradas (debe ir ANTES de los middleware de errores)
 app.use((req, res) => {
@@ -136,5 +141,9 @@ const startServer = async () => {
   }
 };
 
-// Iniciar la aplicación
-startServer();
+export default app;
+
+// Solo iniciar servidor si no estamos en modo test
+if (process.env.NODE_ENV !== 'test') {
+  startServer();
+}
