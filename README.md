@@ -233,11 +233,81 @@ El sistema implementa un manejo de errores centralizado con diferentes tipos de 
 - `NotFoundError`: Recursos no encontrados (404)
 - `ConflictError`: Conflictos con recursos existentes (409)
 
-## Desarrollo y Testing
+## Docker
 
-### Scripts Disponibles
+### **Imagen Disponible en DockerHub**
+La aplicación está containerizada y disponible públicamente:
+
+**🐳 Imagen:** `eugeniaarias16/backend-ecommerce:latest`  
+**📍 DockerHub:** https://hub.docker.com/r/eugeniaarias16/backend-ecommerce
+
+### **Ejecución con Docker**
+
+#### **Opción 1: Ejecutar directamente**
 ```bash
-npm run dev      # Iniciar en modo desarrollo con nodemon
+docker run -p 8080:8080 eugeniaarias16/backend-ecommerce:latest
+```
+
+#### **Opción 2: Con variables de entorno**
+```bash
+docker run -p 8080:8080 \
+  -e MONGODB_URI="tu-conexion-mongodb" \
+  -e JWT_SECRET="tu-clave-secreta" \
+  eugeniaarias16/backend-ecommerce:latest
+```
+
+#### **Opción 3: Con archivo .env**
+```bash
+docker run -p 8080:8080 --env-file .env eugeniaarias16/backend-ecommerce:latest
+```
+
+### **Construcción Local**
+Si prefieres construir la imagen localmente:
+
+```bash
+# Clonar el repositorio
+git clone https://github.com/eugeniaarias16/Backend-III.git
+cd Backend-III
+
+# Construir la imagen
+docker build -t backend-ecommerce .
+
+# Ejecutar
+docker run -p 8080:8080 backend-ecommerce
+```
+
+### **Características del Contenedor**
+- ✅ **Imagen base:** Node.js 18 Alpine Linux (optimizada)
+- ✅ **Usuario no-root:** Ejecuta con usuario `nodejs` para seguridad
+- ✅ **Puerto:** 8080 (configurable con variable `PORT`)
+- ✅ **Healthcheck:** Verificación automática de estado
+- ✅ **Tamaño optimizado:** Solo dependencias de producción
+
+### **Acceso a la Aplicación**
+Una vez ejecutado el contenedor, la aplicación estará disponible en:
+- **API:** http://localhost:8080
+- **Documentación:** http://localhost:8080/api-docs
+- **Mocking:** http://localhost:8080/api/mocks/mockingusers
+
+## Testing
+
+### **Ejecutar Tests**
+```bash
+npm test
+```
+
+### **Tests Implementados**
+- **Tests unitarios:** Controladores con mocks (cart.controller.test.js)
+- **Tests de integración:** Sistema de mocking (purchase.test.js)
+- **Framework:** Jest con ES modules
+- **Cobertura:** 5 tests pasando exitosamente
+
+### **Estructura de Tests**
+```
+tests/
+├── cart.controller.test.js   # Tests unitarios con mocks
+└── purchase.test.js          # Tests de integración
+```iar en modo desarrollo con nodemon
 npm start        # Iniciar en modo producción
 npm run lint     # Ejecutar linter
 npm run lint:fix # Corregir errores de linting automáticamente
@@ -279,3 +349,5 @@ Este proyecto está licenciado bajo [ISC License](LICENSE).
 Desarrollado como proyecto final para el curso de Backend de Coderhouse.
 
 ---
+
+*Este README se actualiza constantemente conforme se añaden nuevas funcionalidades al proyecto.*
